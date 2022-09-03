@@ -1,14 +1,11 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { styles } from 'styles/styles';
-import { trpc } from 'utils/trpc';
+import { trpc } from '@utils/trpc';
 
-import Card from 'Components/Card/Card';
+import Card from '@components/Card/Card';
 
 const Home: NextPage = () => {
-	const someValue = trpc.useQuery(['post.all']);
-	// const hello = trpc.useQuery(["example.hello", { text: "World" }]);
-	console.log({ someValue });
+	const posts = trpc.useQuery(['post.all']);
 
 	return (
 		<>
@@ -24,38 +21,21 @@ const Home: NextPage = () => {
 				/>
 			</Head>
 
-			<main className={styles.appContainer}>
-				<h1 className={styles.title}>
-					<span className={styles.purple}>Prajwal</span>
+			<main className="container mx-auto flex flex-col items-center justify-center min-h-screen p-4">
+				<h1 className="text-5xl md:text-[5rem] leading-normal font-extrabold text-gray-700">
+					<span className="text-purple-300">Prajwal</span>
 				</h1>
-				<p className={styles.body}>Languages I'm experienced with:</p>
-				<div className={styles.grid}>
-					<Card
-						name="NextJS"
-						url="https://nextjs.org/"
-					/>
-					<Card
-						name="React"
-						url="#"
-					/>
-					<Card
-						name="Redux, Redux/toolkit"
-						url="#"
-					/>
-					<Card
-						name="TypeScript"
-						url="https://www.typescriptlang.org/"
-					/>
-					<Card
-						name="TailwindCSS"
-						url="https://tailwindcss.com/"
-					/>
-					<Card
-						name="tRPC"
-						url="https://trpc.io/"
-					/>
+				<p className="text-2xl text-gray-700">Languages I'm experienced with:</p>
+				<div className="grid gap-3 pt-3 mt-3 text-center md:grid-cols-2 lg:w-2/3">
+					{posts.isLoading && <p className="text-red-800 text-5xl">Loading</p>}
+					{posts.data?.map((post) => (
+						<Card
+							key={post.id}
+							title={post.title}
+							description={post.description}
+						/>
+					))}
 				</div>
-				{/* <div className={styles.queryResponse}>{hello.data ? <p>{hello.data.greeting}</p> : <p>Loading..</p>}</div> */}
 			</main>
 		</>
 	);
